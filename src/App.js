@@ -4,10 +4,12 @@ import useWindowSize from './hooks/useWindowSize';
 
 import MinMax from './MinMax';
 import ProductCard from './ProductCard';
+import Modal from './Modal'
 
 export default function(){
 	let { width } = useWindowSize();
-	let [ products, setProducts ] = useState(productsStub());
+	const [ products, setProducts ] = useState(productsStub());
+	const [showDetails, setShowDetails] = useState(false)
 	let total = products.reduce((sum, pr) => sum + pr.price * pr.cnt, 0);
 
 	// let total = useMemo(() => products.reduce((sum, pr) => sum + pr.price * pr.cnt, 0), [products]);
@@ -50,7 +52,12 @@ export default function(){
 			</tbody>
 		</table>
 		<hr/>
-		<strong>Total: { total }</strong>
+		<strong onClick={() => setShowDetails(true)}>Total: { total }</strong>
+		<Modal
+				showed={showDetails}
+				title={`${products.length} goods in your order`}
+				onClose={() => setShowDetails(false)}
+		/>
 		<hr/>
 		<ProductCard/>
 		<hr/>
