@@ -1,20 +1,23 @@
 import React, { useEffect, useState, useMemo } from 'react'
 
-import useWindowSize from './hooks/useWindowSize';
-
-import MinMax from './MinMax';
-import ProductCard from './ProductCard';
-import Modal from './Modal'
+import Cart from './Cart'
+import Order from './Order'
+import Result from './Result'
+import SettingsContext from "./context/settings";
+import Settings from "./context/settings";
 
 export default function(){
-	let { width } = useWindowSize();
-	const [ products, setProducts ] = useState(productsStub());
-	const [showDetails, setShowDetails] = useState(false)
+	const [settings, setSettings] = useState({lang: 'ru', theme: 'light'})
+
+	const [page, setPage] = useState('cart')
+	const moveToCart = () => setPage('cart')
+	const moveToOrder = () => setPage('order')
+	const moveToResult = () => setPage('result')
+
+	let [ products, setProducts ] = useState(productsStub());
 	let total = products.reduce((sum, pr) => sum + pr.price * pr.cnt, 0);
 
-	// let total = useMemo(() => products.reduce((sum, pr) => sum + pr.price * pr.cnt, 0), [products]);
-
-	let setCnt = (id, cnt) => {
+	let setProductCnt = (id, cnt) => {
 		setProducts(products.map(pr => pr.id != id ? pr : ({ ...pr, cnt })));
 	}
 
@@ -22,49 +25,61 @@ export default function(){
 		setProducts(products.filter(el => el.id !== id));
 	}
 
-	return( <div className="container mt-1">
-		<h1>Products list</h1>
-		<table>
-			<tbody>
-				<tr>
-					<th>#</th>
-					<th>Title</th>
-					<th>Price</th>
-					<th>Cnt</th>
-					<th>Total</th>
-					<th>Action</th>
-				</tr>
-				{ products.map((pr, i) => (
-					<tr key={pr.id}>
-						<td>{ i + 1 }</td>
-						<td>{ pr.title }</td>
-						<td>{ pr.price }</td>
-						<td>
-							<MinMax min={1} max={pr.rest} current={pr.cnt} onChange={cnt => setCnt(pr.id, cnt)} />
-						</td>
-						<td>{ pr.price * pr.cnt }</td>
-						<td>
-							<button type="button" onClick={() => removeProduct(pr.id)}>X</button>
-							<button type="button" onClick={() => setCnt(pr.id, pr.rest)}>MAX</button>
-						</td>
-					</tr>
-				)) }
-			</tbody>
-		</table>
-		<hr/>
-		<strong onClick={() => setShowDetails(true)}>Total: { total }</strong>
-		<Modal
-				showed={showDetails}
-				title={`${products.length} goods in your order`}
-				onClose={() => setShowDetails(false)}
-		/>
-		<hr/>
-		<ProductCard/>
-		<hr/>
-		<footer>
-			{ width }
-		</footer>
-	</div>)
+	const [orderForm, setOrderForm] = useState([
+		{
+			name: 'name',
+			label: 'Name',
+			value: '',
+			regexp: '/a-zA-Z/g',
+			warning: 'Name is not correct'
+		},
+		{
+			name: 'email',
+			label: 'Email',
+			value: '',
+			regexp: '/a-zA-Z/g',
+			warning: 'Email is not valid'
+		},
+		{
+			name: 'phone',
+			label: 'Phone',
+			value: '',
+			regexp: '/a-zA-Z/g',
+			warning: 'City is not valid'
+		},
+	])
+
+	const orderFormUpdate = (name, value) => {
+		setOrderForm(orderForm.map(field => {
+					if (field.name !== name) return field
+					return {...field, value}
+				}
+			)
+		)
+	}
+
+	return <SettingsContext.Provider value={settings}>
+	<div className="container mt-1">
+		{ page === 'cart' &&
+				<Cart
+				 onNext={moveToOrder}
+				 products={products}
+				 onChange={setProductCnt}
+				 onRemove={removeProduct}
+
+				/> }
+		{ page === 'order' &&
+				<Order
+						onNext={moveToResult}
+						onPrev={moveToCart}
+						onChange={orderFormUpdate}
+						orderData={orderForm}
+				/> }
+		{ page === 'result' &&
+				<Result products={products} />
+		}
+	</div>
+	</SettingsContext.Provider>
 }
 
 function productsStub(){
@@ -100,7 +115,7 @@ function productsStub(){
 	];
 }
 
-/* 
+/*
 let setCnt = (id, cnt) => {
 	let newProducts = [ ...products ];
 	let productInd = products.findIndex(pr => pr.id == id);

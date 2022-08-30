@@ -1,12 +1,15 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useContext } from 'react'
 import propTypes from './props';
 
 import style from './style.module.css';
+import SettingsContext from "../context/settings";
 
 MinMaxLazy.propTypes = propTypes;
 
 function MinMaxLazy({ min = 1, max, current, onChange }){
 	let inp = useRef();
+	const settings = useContext(SettingsContext)
+	console.log(settings)
 
 	function onKeyPress(e){
 		if(e.key === 'Enter'){
