@@ -3,8 +3,9 @@ import React, { useEffect, useState, useMemo } from 'react'
 import Cart from './Cart'
 import Order from './Order'
 import Result from './Result'
+import order from "./Order";
+
 import SettingsContext from "./context/settings";
-import Settings from "./context/settings";
 
 export default function(){
 	const [settings, setSettings] = useState({lang: 'ru', theme: 'light'})
@@ -14,45 +15,41 @@ export default function(){
 	const moveToOrder = () => setPage('order')
 	const moveToResult = () => setPage('result')
 
-	let [ products, setProducts ] = useState(productsStub());
-	let total = products.reduce((sum, pr) => sum + pr.price * pr.cnt, 0);
-
-	let setProductCnt = (id, cnt) => {
-		setProducts(products.map(pr => pr.id != id ? pr : ({ ...pr, cnt })));
-	}
-
-	let removeProduct = (id) => {
-		setProducts(products.filter(el => el.id !== id));
-	}
-
 	const [orderForm, setOrderForm] = useState([
 		{
 			name: 'name',
 			label: 'Name',
 			value: '',
-			regexp: '/a-zA-Z/g',
-			warning: 'Name is not correct'
+			pattern: /^.{2,}$/g,
+			errorMessage: 'Name is not correct',
+			valid: false
 		},
 		{
 			name: 'email',
 			label: 'Email',
 			value: '',
-			regexp: '/a-zA-Z/g',
-			warning: 'Email is not valid'
+			pattern: /^.+@.+$/,
+			errorMessage: 'Email is not valid',
+			valid: false
 		},
 		{
 			name: 'phone',
 			label: 'Phone',
 			value: '',
-			regexp: '/a-zA-Z/g',
-			warning: 'City is not valid'
+			pattern: /^\d{5,10}.$/,
+			errorMessage: 'City is not valid',
+			valid: false
 		},
 	])
+
+	const orderData = {}
+	orderForm.forEach(f => orderData[f.name] = f.value)
 
 	const orderFormUpdate = (name, value) => {
 		setOrderForm(orderForm.map(field => {
 					if (field.name !== name) return field
-					return {...field, value}
+					const valid = field.pattern.test(value)
+					return {...field, value, valid }
 				}
 			)
 		)
@@ -63,10 +60,6 @@ export default function(){
 		{ page === 'cart' &&
 				<Cart
 				 onNext={moveToOrder}
-				 products={products}
-				 onChange={setProductCnt}
-				 onRemove={removeProduct}
-
 				/> }
 		{ page === 'order' &&
 				<Order
@@ -76,7 +69,9 @@ export default function(){
 						orderData={orderForm}
 				/> }
 		{ page === 'result' &&
-				<Result products={products} />
+				<Result
+						orderData={orderData}
+				/>
 		}
 	</div>
 	</SettingsContext.Provider>
