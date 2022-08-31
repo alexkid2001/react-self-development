@@ -1,7 +1,7 @@
 import React from "react";
-import useStore from "./hooks/useStore";
-// import StoreContext from './context/store'
 import MinMax from "./MinMax";
+// import StoreContext from './context/store'
+import useStore from "./hooks/useStore";
 import {observer} from "mobx-react-lite";
 
 export default observer(Cart)

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react'
+import { Routes, Route } from "react-router-dom";
 
 import Cart from './Cart'
 import Order from './Order'
@@ -10,69 +11,13 @@ import SettingsContext from "./context/settings";
 export default function(){
 	const [settings, setSettings] = useState({lang: 'ru', theme: 'light'})
 
-	const [page, setPage] = useState('cart')
-	const moveToCart = () => setPage('cart')
-	const moveToOrder = () => setPage('order')
-	const moveToResult = () => setPage('result')
-
-	const [orderForm, setOrderForm] = useState([
-		{
-			name: 'name',
-			label: 'Name',
-			value: '',
-			pattern: /^.{2,}$/g,
-			errorMessage: 'Name is not correct',
-			valid: false
-		},
-		{
-			name: 'email',
-			label: 'Email',
-			value: '',
-			pattern: /^.+@.+$/,
-			errorMessage: 'Email is not valid',
-			valid: false
-		},
-		{
-			name: 'phone',
-			label: 'Phone',
-			value: '',
-			pattern: /^\d{5,10}.$/,
-			errorMessage: 'City is not valid',
-			valid: false
-		},
-	])
-
-	const orderData = {}
-	orderForm.forEach(f => orderData[f.name] = f.value)
-
-	const orderFormUpdate = (name, value) => {
-		setOrderForm(orderForm.map(field => {
-					if (field.name !== name) return field
-					const valid = field.pattern.test(value)
-					return {...field, value, valid }
-				}
-			)
-		)
-	}
-
 	return <SettingsContext.Provider value={settings}>
 	<div className="container mt-1">
-		{ page === 'cart' &&
-				<Cart
-				 onNext={moveToOrder}
-				/> }
-		{ page === 'order' &&
-				<Order
-						onNext={moveToResult}
-						onPrev={moveToCart}
-						onChange={orderFormUpdate}
-						orderData={orderForm}
-				/> }
-		{ page === 'result' &&
-				<Result
-						orderData={orderData}
-				/>
-		}
+		<Routes>
+			<Route path='/cart' element={<Cart />}></Route>
+			<Route path='/order' element={<Order />}></Route>
+			<Route path='/result' element={<Result />}></Route>
+		</Routes>
 	</div>
 	</SettingsContext.Provider>
 }

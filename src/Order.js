@@ -1,9 +1,12 @@
 import React, {useState} from "react";
-import Modal from "react-bootstrap/Modal";
-import {Button, ModalBody, ModalFooter, ModalHeader} from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 
-export default function({ orderData ,onNext, onPrev, onChange }) {
-  const isValid = orderData.every(f => f.valid)
+import useStore from "./hooks/useStore";
+import {observer} from "mobx-react-lite";
+
+export default observer(function({ onNext, onPrev }) {
+
+  const [ orderStore ] = useStore('order')
 
   const [showModal, setShowModal] = useState(false)
   const [confirmed, setConfirmed] = useState(false)
@@ -21,7 +24,7 @@ export default function({ orderData ,onNext, onPrev, onChange }) {
     <h1>Input Data</h1>
     <hr/>
     <form>
-      {orderData.map(i => {
+      {orderStore.form.map(i => {
         return (
           <div className="mb-3" key={i.name}>
             <label htmlFor={i.name} className="form-label">{i.label}</label>
@@ -31,7 +34,7 @@ export default function({ orderData ,onNext, onPrev, onChange }) {
                 value={i.value}
                 id={i.name}
                 name={i.name}
-                onChange={e => onChange(i.name, e.target.value.trim())}
+                onChange={e => orderStore.change(i.name, e.target.value.trim())}
             />
             <div className="invalid-feedback">
               {i.warning}
@@ -46,7 +49,7 @@ export default function({ orderData ,onNext, onPrev, onChange }) {
         type="button"
         className="btn btn-primary"
         onClick={openModal}
-        disabled={!isValid}
+        disabled={!orderStore.isFormValid}
     >Send</button>
     <Modal show={showModal} onExit={onExited}>
       <Modal.Header>
@@ -63,4 +66,4 @@ export default function({ orderData ,onNext, onPrev, onChange }) {
       </Modal.Footer>
     </Modal>
   </div>
-}
+})
