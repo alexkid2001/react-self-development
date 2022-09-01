@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { Routes, Route } from "react-router-dom";
 
-import Cart from './Cart'
-import Order from './Order'
-import Result from './Result'
-import order from "./Order";
+import Cart from './views/Cart'
+import Order from './views/Order'
+import Result from './views/Result'
+import E404 from './views/E404'
 
 import SettingsContext from "./context/settings";
 
@@ -14,9 +14,10 @@ export default function(){
 	return <SettingsContext.Provider value={settings}>
 	<div className="container mt-1">
 		<Routes>
-			<Route path='/cart' element={<Cart />}></Route>
-			<Route path='/order' element={<Order />}></Route>
-			<Route path='/result' element={<Result />}></Route>
+			<Route path='/' element={<Cart />} />
+			<Route path='/order' element={<Order />} />
+			<Route path='/result' element={<Result />} />
+			<Route path='*' element={<E404 />} />
 		</Routes>
 	</div>
 	</SettingsContext.Provider>

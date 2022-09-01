@@ -1,5 +1,5 @@
 import React, {useRef} from 'react'
-import useClickOutSide from "./hooks/useClickOutSide";
+import useClickOutSide from "../hooks/useClickOutSide";
 
 export default function({ title, showed, onClose }) {
 

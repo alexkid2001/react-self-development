@@ -1,11 +1,11 @@
 import React, {useState} from "react";
 import { Button, Modal } from "react-bootstrap";
-
-import useStore from "./hooks/useStore";
+import { Link, useNavigate } from "react-router-dom";
+import useStore from "../hooks/useStore";
 import {observer} from "mobx-react-lite";
 
-export default observer(function({ onNext, onPrev }) {
-
+export default observer(function() {
+  const navigate = useNavigate()
   const [ orderStore ] = useStore('order')
 
   const [showModal, setShowModal] = useState(false)
@@ -14,10 +14,11 @@ export default observer(function({ onNext, onPrev }) {
   const closeModal = () => setShowModal(false)
   const sendForm = () => {
     setConfirmed(true)
+    orderStore.send()
     setShowModal(false)
   }
   const onExited = () => {
-    if(confirmed) onNext()
+    if(confirmed) navigate('/result')
   }
 
   return <div>
@@ -44,7 +45,7 @@ export default observer(function({ onNext, onPrev }) {
       }
 
     </form>
-    <button type="button" className="btn btn-secondary" onClick={onPrev}>Move to prev</button>
+    <Link className="btn btn-secondary" to="/">Move to prev</Link>
     <button
         type="button"
         className="btn btn-primary"
