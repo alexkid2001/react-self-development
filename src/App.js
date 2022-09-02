@@ -1,13 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { Routes, Route, Link } from "react-router-dom";
 
-import Home from "./views/Home";
-import Cart from './views/Cart'
-import Order from './views/Order'
-import Result from './views/Result'
-import Product from "./views/Product";
-import E404 from './views/E404'
-
+import RoutesView from './routes'
+import CartStat from "./componets/cart";
 import SettingsContext from "./context/settings";
 
 export default function(){
@@ -18,7 +13,9 @@ export default function(){
 			<div className="container mt-1">
 				<div className="row justify-content-between">
 					<div className="col">Logo</div>
-					<div className="col">In cart: 0</div>
+					<div className="col">
+						<CartStat />
+					</div>
 				</div>
 			</div>
 		</header>
@@ -34,14 +31,7 @@ export default function(){
 
 					</aside>
 					<main className="col col-9">
-						<Routes>
-							<Route path='/' element={<Home />} />
-							<Route path='/cart' element={<Cart />} />
-							<Route path='/product/:id' element={<Product />} />
-							<Route path='/order' element={<Order />} />
-							<Route path='/result' element={<Result />} />
-							<Route path='*' element={<E404 />} />
-						</Routes>
+						<RoutesView />
 					</main>
 				</div>
 			</div>

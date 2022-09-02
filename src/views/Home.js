@@ -4,6 +4,7 @@ import MinMax from "../MinMax";
 // import StoreContext from './context/store'
 import useStore from "../hooks/useStore";
 import {observer} from "mobx-react-lite";
+import {Button} from "react-bootstrap";
 
 export default observer(Home)
 
@@ -22,7 +23,18 @@ function Home() {
                 <h2>{ pr.title }</h2>
                 <p>{pr.price}</p>
                 <Link to={`/product/${pr.id}`}>Read more</Link>
-                { cartStore.inCart(pr.id) ? 1 : 0 }
+                <div className="flex mb-2">
+                  {cartStore.inCart(pr.id) ?
+                    <Button
+                        className="btn btn-danger"
+                        onClick={() => cartStore.remove(pr.id)}
+                    >Remove from cart</Button> :
+                    <Button
+                        className="btn btn-success"
+                        onClick={() => cartStore.add(pr.id)}
+                    >Add to cart</Button>
+                  }
+                </div>
               </div>
             </div>
           </div>
