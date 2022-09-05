@@ -9,7 +9,6 @@ MinMaxLazy.propTypes = propTypes;
 function MinMaxLazy({ min = 1, max, current, onChange }){
 	let inp = useRef();
 	const settings = useContext(SettingsContext)
-	console.log(settings)
 
 	function onKeyPress(e){
 		if(e.key === 'Enter'){

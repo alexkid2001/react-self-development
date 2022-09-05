@@ -1,8 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 import product from "../views/Product";
 
-const BASE_URL = 'http://faceprog.ru/reactcourseapi'
-const urlAllProducts = `${BASE_URL}/products/all.php`
+
 
 export default class Products {
   products = []
@@ -10,11 +9,11 @@ export default class Products {
   constructor(rootStore) {
     makeAutoObservable(this)
     this.rootStore = rootStore
+    this.api = this.rootStore.api.products
   }
 
   load() {
-    fetch(urlAllProducts)
-        .then(resp => resp.json())
+    this.api.all()
         .then(pr => {
           runInAction(() => this.products = pr)
         })

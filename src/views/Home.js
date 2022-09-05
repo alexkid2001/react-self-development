@@ -28,10 +28,12 @@ function Home() {
                     <Button
                         className="btn btn-danger"
                         onClick={() => cartStore.remove(pr.id)}
+                        disabled={cartStore.inPending(pr.id)}
                     >Remove from cart</Button> :
                     <Button
                         className="btn btn-success"
                         onClick={() => cartStore.add(pr.id)}
+                        disabled={cartStore.inPending(pr.id)}
                     >Add to cart</Button>
                   }
                 </div>
