@@ -9,14 +9,16 @@ import RootStore from './store/'
 import App from './App';
 
 const store = new RootStore()
-store.products.load()
 store.cart.load()
-ReactDom.render(
-		<BrowserRouter>
-			<StoreContext.Provider value={store}>
-				<App/>
-			</StoreContext.Provider>
-		</BrowserRouter>,
-	document.querySelector('.app')
-);
+store.products.load().then(() => {
+	ReactDom.render(
+			<BrowserRouter>
+				<StoreContext.Provider value={store}>
+					<App/>
+				</StoreContext.Provider>
+			</BrowserRouter>,
+			document.querySelector('.app')
+	);
+})
+
 

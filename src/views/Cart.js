@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import MinMax from "../MinMax";
 // import StoreContext from './context/store'
 import useStore from "../hooks/useStore";
 import {observer} from "mobx-react-lite";
+import CartRow from "../componets/cart-row";
 
 export default observer(Cart)
 
@@ -25,19 +25,13 @@ function Cart() {
         <th>Action</th>
       </tr>
       { itemsDetailed.map((pr, i) => (
-          <tr key={pr.id}>
-            <td>{ i + 1 }</td>
-            <td>{ pr.title }</td>
-            <td>{ pr.price }</td>
-            <td>
-              <MinMax min={1} max={pr.rest} current={pr.cnt} onChange={cnt => cartStore.change(pr.id, cnt)} />
-            </td>
-            <td>{ pr.price * pr.cnt }</td>
-            <td>
-              <button type="button" onClick={() => cartStore.remove(pr.id)}>X</button>
-              <button type="button" onClick={() => cartStore.change(pr.id, pr.rest)}>MAX</button>
-            </td>
-          </tr>
+          <CartRow
+            key={pr.id}
+            num={i + 1}
+            product={pr}
+            onChange={change}
+            onRemove={remove}
+          />
       )) }
       </tbody>
     </table>

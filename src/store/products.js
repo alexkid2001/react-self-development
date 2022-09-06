@@ -1,7 +1,4 @@
 import { makeAutoObservable, runInAction } from 'mobx'
-import product from "../views/Product";
-
-
 
 export default class Products {
   products = []
@@ -13,7 +10,7 @@ export default class Products {
   }
 
   load() {
-    this.api.all()
+    return this.api.all()
         .then(pr => {
           runInAction(() => this.products = pr)
         })

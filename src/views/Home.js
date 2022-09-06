@@ -1,16 +1,19 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import MinMax from "../MinMax";
+// import { Link } from "react-router-dom";
+// import MinMax from "../componets/MinMax";
 // import StoreContext from './context/store'
 import useStore from "../hooks/useStore";
 import {observer} from "mobx-react-lite";
-import {Button} from "react-bootstrap";
+// import ProductCard from '../componets/products/card'
+import ProductCard from '../componets/products/cardalt'
+
 
 export default observer(Home)
 
 function Home() {
   const [ productsStore, cartStore ] = useStore('products', 'cart')
   const { products } = productsStore
+  const { inCart, inPending, add, remove } = cartStore
 
   return <div>
     <h1>Catalog</h1>
@@ -18,27 +21,14 @@ function Home() {
     <div className="row">
       { products.map(pr => (
           <div className="col col-4 mb-3 mt-3" key={pr.id}>
-            <div className="card">
-              <div className="card-body">
-                <h2>{ pr.title }</h2>
-                <p>{pr.price}</p>
-                <Link to={`/product/${pr.id}`}>Read more</Link>
-                <div className="flex mb-2">
-                  {cartStore.inCart(pr.id) ?
-                    <Button
-                        className="btn btn-danger"
-                        onClick={() => cartStore.remove(pr.id)}
-                        disabled={cartStore.inPending(pr.id)}
-                    >Remove from cart</Button> :
-                    <Button
-                        className="btn btn-success"
-                        onClick={() => cartStore.add(pr.id)}
-                        disabled={cartStore.inPending(pr.id)}
-                    >Add to cart</Button>
-                  }
-                </div>
-              </div>
-            </div>
+            {/*<ProductCard*/}
+            {/*    product={pr}*/}
+            {/*    isPending={inPending(pr.id)}*/}
+            {/*    inCart={inCart(pr.id)}*/}
+            {/*    onAdd={() => add(pr.id)}*/}
+            {/*    onRemove={() => remove(pr.id)}*/}
+            {/*/>*/}
+            <ProductCard id={pr.id} />
           </div>
       )) }
     </div>

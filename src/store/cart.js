@@ -1,11 +1,5 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 
-const BASE_URL = 'http://faceprog.ru/reactcourseapi'
-const urlCartLoad = `${BASE_URL}/cart/load.php`
-const urlCartAdd = `${BASE_URL}/cart/add.php`
-const urlCartRemove = `${BASE_URL}/cart/remove.php`
-
-
 export default class Cart {
   items = []
   #token = null
@@ -26,7 +20,7 @@ export default class Cart {
     return id => this.items.some(item => item.id == id)
   }
 
-  inPending(id) {
+  inPending = (id) => {
     return this.inProcess.some(item => item == id)
   }
 
@@ -36,8 +30,7 @@ export default class Cart {
 
     if (item) {
       cnt = Math.max(1, Math.min(detail.rest, cnt))
-      let response = await fetch(`${BASE_URL}/cart/change.php?token=${this.#token}&id=${id}&cnt=${cnt}`)
-      let res = await response.json()
+      const res = this.api.change(id, cnt, this.#token)
       if(res) item.cnt = cnt
     }
   }
@@ -45,8 +38,7 @@ export default class Cart {
   add = (id) => {
     if (!this.inCart(id) && !this.inPending(id)) {
       this.inProcess.push(id)
-      fetch(`${urlCartAdd}?token=${this.#token}&id=${id}`)
-          .then(res => res.json())
+      this.api.add(id, this.#token)
           .then(result => {
             runInAction(() => {
               if (result) {
@@ -55,15 +47,13 @@ export default class Cart {
               this.inProcess = this.inProcess.filter(item => item !== id)
             })
           })
-
     }
   }
 
   remove(id) {
     if(this.inCart(id)) {
       this.inProcess.push(id)
-      fetch(`${urlCartRemove}?token=${this.#token}&id=${id}`)
-          .then(res => res.json())
+      this.api.remove(id, this.#token)
           .then(result => {
             if (result) {
               runInAction(() => {
@@ -77,8 +67,7 @@ export default class Cart {
 
   load() {
     const curToken = this.rootStore.storage.getItem('CART_TOKEN')
-    fetch(`${urlCartLoad}?token=${curToken}`)
-        .then(resp => resp.json())
+    this.api.load(curToken)
         .then(({cart, token, needUpdate}) => {
           runInAction(() => {
             this.items = cart
@@ -91,5 +80,7 @@ export default class Cart {
   constructor(rootStore) {
     makeAutoObservable(this)
     this.rootStore = rootStore
+
+    this.api = this.rootStore.api.cart
   }
 }

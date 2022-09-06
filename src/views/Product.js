@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import MinMax from "../MinMax";
+import MinMax from "../componets/MinMax";
 // import StoreContext from './context/store'
 import useStore from "../hooks/useStore";
 import {observer} from "mobx-react-lite";
