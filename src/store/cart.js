@@ -24,7 +24,7 @@ export default class Cart {
     return this.inProcess.some(item => item == id)
   }
 
-  async change(id, cnt){
+  change = async (id, cnt) => {
     const item = this.items.find(pr => pr.id === id)
     const detail = this.itemsDetailed.find(pr => pr.id === id)
 

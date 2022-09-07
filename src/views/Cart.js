@@ -28,7 +28,7 @@ function Cart() {
           <CartRow
             key={pr.id}
             num={i + 1}
-            product={pr}
+            {...pr}
             onChange={change}
             onRemove={remove}
           />

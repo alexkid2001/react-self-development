@@ -2,19 +2,20 @@ import React from "react";
 import MinMax from "./MinMax";
 import PropTypes from "prop-types";
 
-const CartRow = ({ num, product, onChange, onRemove }) => {
-  const change = cnt => onChange(product.id, cnt)
-  const remove = () => onRemove(product.id)
-  const setMax = () => onChange(product.id, product.rest)
+const CartRow = ({ num, id, title, price, rest, cnt, onChange, onRemove }) => {
+  const change = cnt => onChange(id, cnt)
+  const remove = () => onRemove(id)
+  const setMax = () => onChange(id, rest)
+  console.log('render')
 
-  return <tr key={product.id}>
+  return <tr key={id}>
     <td>{ num }</td>
-    <td>{ product.title }</td>
-    <td>{ product.price }</td>
+    <td>{ title }</td>
+    <td>{ price }</td>
     <td>
-      <MinMax min={1} max={product.rest} current={product.cnt} onChange={change} />
+      <MinMax min={1} max={rest} current={cnt} onChange={change} />
     </td>
-    <td>{ product.price * product.cnt }</td>
+    <td>{ price * cnt }</td>
     <td>
       <button type="button" onClick={remove}>X</button>
       <button type="button" onClick={setMax}>MAX</button>
@@ -25,9 +26,12 @@ const CartRow = ({ num, product, onChange, onRemove }) => {
 
 CartRow.propTypes = {
   num: PropTypes.number.isRequired,
-  product: PropTypes.object.isRequired,
+  id: PropTypes.number.isRequired,
+  title: PropTypes.string.isRequired,
+  price: PropTypes.number.isRequired,
+  cnt: PropTypes.number.isRequired,
   onChange: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired,
 }
 
-export default CartRow
+export default React.memo(CartRow)
